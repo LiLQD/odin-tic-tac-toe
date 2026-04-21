@@ -12,7 +12,7 @@ const Gameboard = (function () {
 
   function getBoard() {
     const printBoard = board.map((row) => row.map((cell) => cell.getCell()));
-    console.log(printBoard);
+    return printBoard;
   }
 
   function placeMark(rowIndex, columnIndex, mark) {
@@ -49,8 +49,11 @@ function Player(name) {
   function getMark() {
     return mark;
   }
-
-  return { name, setMark, getMark };
+  function win(){
+    point++;
+    console.log(`{name} won with {point} points`);
+  }
+  return { name, win, setMark, getMark };
 }
 
 const gameController = (function GameController() {
@@ -71,7 +74,7 @@ const gameController = (function GameController() {
   function playRound() {
     while (!isWin) {
       if (isFirstPlayerTurn) {
-        Gameboard.getBoard();
+        console.log(Gameboard.getBoard());
         console.log(`Is ${player1.name} turn`);
         const rowIndex = prompt("Row index");
         const columnIndex = prompt("Column index");
@@ -79,7 +82,7 @@ const gameController = (function GameController() {
         Gameboard.placeMark(rowIndex - 1, columnIndex - 1, player1.getMark());
         switchTurn();
       } else {
-        Gameboard.getBoard();
+        console.log(Gameboard.getBoard());
         console.log(`Is ${player2.name} turn`);
         const rowIndex = prompt("Row index");
         const columnIndex = prompt("Column index");
