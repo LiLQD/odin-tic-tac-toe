@@ -1,25 +1,54 @@
-const Gameboard = (function GameBoard(){
-    
-    const arr = [["", "", ""], ["", "" ,""], ["", "", ""]];
-    function getSquareValue(row, column){
-        return arr[row][column];
-    }
-    function setSquareValue(row, column, value){
-        return arr[row][column] = value;
-    }
-    return {getSquareValue, setSquareValue};
-})()
+const Gameboard = (function () {
+  let board = [];
+  let row = 3;
+  let column = 3;
 
-function Player(name){
-    let point = 0;
-    let mark;
-    function setMark(m){
-        mark = m;
+  for (let i = 0; i < row; i++) {
+    board[i] = [];
+    for (let j = 0; j < column; j++) {
+      board[i].push(Cell());
     }
-    function getMark(){
-        return mark;
+  }
+
+  function getBoard() {
+    const printBoard = board.map((row) => row.map((cell) => cell.getCell()));
+    console.log(printBoard);
+  }
+
+  function placeMark(rowIndex, columnIndex, mark) {
+    if (board[rowIndex][columnIndex] != "") {
+      board[rowIndex][columnIndex].setCell(mark);
+    } else {
+      console.log("Can only tick to empty cell");
+      return;
     }
-    return function createPlayer(){
-        return {name, mark, setMark, getMark}
-    };
-};
+  }
+
+  return { getBoard, placeMark };
+})();
+
+function Cell() {
+  let value = "";
+  function setCell(mark) {
+    value = mark;
+  }
+  function getCell() {
+    return value;
+  }
+  return { setCell, getCell };
+}
+
+function Player(name) {
+  let point = 0;
+  let mark;
+  function setMark(m) {
+    mark = m;
+  }
+  function getMark() {
+    return mark;
+  }
+  return function createPlayer() {
+    return { name, mark, setMark, getMark };
+  };
+}
+
