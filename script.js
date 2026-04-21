@@ -16,7 +16,7 @@ const Gameboard = (function () {
   }
 
   function placeMark(rowIndex, columnIndex, mark) {
-    if (board[rowIndex][columnIndex].getCell() != "") {
+    if (board[rowIndex][columnIndex].getCell() === "") {
       board[rowIndex][columnIndex].setCell(mark);
     } else {
       console.log("Can only tick to empty cell");
@@ -47,8 +47,10 @@ function Player(name) {
   function getMark() {
     return mark;
   }
-  return function createPlayer() {
-    return { name, mark, setMark, getMark };
-  };
+
+  return { name, setMark, getMark };
+  
 }
 
+
+GameController();
