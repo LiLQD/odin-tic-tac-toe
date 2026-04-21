@@ -52,5 +52,3 @@ function Player(name) {
   
 }
 
-
-GameController();
