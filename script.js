@@ -52,3 +52,21 @@ function Player(name) {
   
 }
 
+function GameController(){
+  Gameboard.getBoard();
+
+  const player1 = Player("LiLQD");
+  const player2 = Player("GunD");
+  console.log(player1);
+  console.log(player2);
+
+  isFirstPlayerTurn = true;
+  console.log(isFirstPlayerTurn);
+  function switchTurn(){
+    return isFirstPlayerTurn = isFirstPlayerTurn ? false : true;
+  }
+  switchTurn()
+  console.log(isFirstPlayerTurn);
+}
+
+GameController();
