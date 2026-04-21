@@ -19,8 +19,10 @@ const Gameboard = (function () {
     if (board[rowIndex][columnIndex].getCell() === "") {
       board[rowIndex][columnIndex].setCell(mark);
     } else {
-      console.log("Can only tick to empty cell");
-      return;
+      console.log("Can only tick to empty cell. Please choose another cell");
+      const rowIndex = prompt("Choose another row index");
+      const columnIndex = prompt("Choose another column index");
+      placeMark(rowIndex-1, columnIndex-1, mark);
     }
   }
 
@@ -49,24 +51,45 @@ function Player(name) {
   }
 
   return { name, setMark, getMark };
-  
 }
 
-function GameController(){
-  Gameboard.getBoard();
-
+const gameController = (function GameController() {
   const player1 = Player("LiLQD");
+  player1.setMark("O");
   const player2 = Player("GunD");
+  player2.setMark("X");
   console.log(player1);
   console.log(player2);
 
-  isFirstPlayerTurn = true;
-  console.log(isFirstPlayerTurn);
-  function switchTurn(){
-    return isFirstPlayerTurn = isFirstPlayerTurn ? false : true;
+  let isFirstPlayerTurn = true;
+  function switchTurn() {
+    return (isFirstPlayerTurn = isFirstPlayerTurn ? false : true);
   }
-  switchTurn()
-  console.log(isFirstPlayerTurn);
-}
 
-GameController();
+  let isWin = false;
+
+  function playRound() {
+    while (!isWin) {
+      if (isFirstPlayerTurn) {
+        Gameboard.getBoard();
+        console.log(`Is ${player1.name} turn`);
+        const rowIndex = prompt("Row index");
+        const columnIndex = prompt("Column index");
+
+        Gameboard.placeMark(rowIndex - 1, columnIndex - 1, player1.getMark());
+        switchTurn();
+      } else {
+        Gameboard.getBoard();
+        console.log(`Is ${player2.name} turn`);
+        const rowIndex = prompt("Row index");
+        const columnIndex = prompt("Column index");
+
+        Gameboard.placeMark(rowIndex - 1, columnIndex - 1, player2.getMark());
+        switchTurn();
+      }
+    }
+  }
+  return { playRound };
+})();
+
+gameController.playRound();
