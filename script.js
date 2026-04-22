@@ -22,7 +22,7 @@ const Gameboard = (function () {
       console.log("Can only tick to empty cell. Please choose another cell");
       const rowIndex = prompt("Choose another row index");
       const columnIndex = prompt("Choose another column index");
-      placeMark(rowIndex-1, columnIndex-1, mark);
+      placeMark(rowIndex - 1, columnIndex - 1, mark);
     }
   }
 
@@ -49,7 +49,7 @@ function Player(name) {
   function getMark() {
     return mark;
   }
-  function win(){
+  function win() {
     point++;
     console.log(`{name} won with {point} points`);
   }
@@ -68,11 +68,56 @@ const gameController = (function GameController() {
   function switchTurn() {
     return (isFirstPlayerTurn = isFirstPlayerTurn ? false : true);
   }
+  
+  function winCheck() {
+    const valueBoard = Gameboard.getBoard();
+    const boardSize = valueBoard.length;
+    let diagWinCondition = true;
+    let antiDiagWinCondition = true;
+    let firstDiagCell = valueBoard[0][0].getCell();
+      if (firstDiagCell === "") diagWinCondition = false;
 
-  let isWin = false;
+      let firstAntiDiagCell = valueBoard[0][boardSize - 1].getCell();
+      if (firstAntiDiagCell === "") antiDiagWinCondition = false;
+    for (let n = 0; n < boardSize; n++) {
+      let rowWinCondition = true;
+      let colWinCondition = true;
+
+      let firstRowCell = valueBoard[n][0].getCell();
+      if (firstRowCell === "") rowWinCondition = false;
+
+      let firstColCell = valueBoard[0][n].getCell();
+      if (firstColCell === "") colWinCondition = false;
+
+      for (let m = 0; m < boardSize; m++) {
+        if (rowWinCondition && valueBoard[n][m].getCell() != firstRowCell) {
+          rowWinCondition = false;
+        }
+        if (colWinCondition && valueBoard[m][n].getCell() != firstColCell) {
+          colWinCondition = false;
+        }
+      }
+
+      if (rowWinCondition || colWinCondition) return true;
+    }
+    for (let i = 0; i < boardSize; i++) {
+      if (diagWinCondition && valueBoard[i][i].getCell() != firstDiagCell) {
+        diagWinCondition = false;
+      }
+
+      if (
+        antiDiagWinCondition &&
+        valueBoard[i][boardSize - 1 - i].getCell() != firstAntiDiagCell
+      ) {
+        antiDiagWinCondition = false;
+      }
+    }
+    if (diagWinCondition || antiDiagWinCondition) return true;
+  }
 
   function playRound() {
     while (!isWin) {
+      winCheck();
       if (isFirstPlayerTurn) {
         console.log(Gameboard.getBoard());
         console.log(`Is ${player1.name} turn`);
