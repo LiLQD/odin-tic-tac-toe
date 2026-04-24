@@ -1,43 +1,288 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+/* 1. Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+
+/* 2. Remove default margin */
+*:not(dialog) {
+  margin: 0;
 }
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
 body {
-	line-height: 1;
+  /* 4. Increase line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
 }
-ol, ul {
-	list-style: none;
+
+/* 6. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
 }
-blockquote, q {
-	quotes: none;
+
+/* 7. Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+
+/* 8. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
 }
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root,
+#__next {
+  isolation: isolate;
+}
+
+.container {
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-name {
+  font-size: 4rem;
+}
+.title > p {
+  font-size: 1.2rem;
+}
+.game-content {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  justify-items: center;
+}
+
+.player-bar {
+  width: 36%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.players-header {
+  color: #226eda;
+  font-weight: bold;
+}
+
+.player {
+  width: 80%;
+}
+.player > input {
+  appearance: none;
+  width: 100%;
+  height: 2rem;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.start {
+  appearance: none;
+  cursor: pointer;
+
+  width: 80%;
+  height: 3rem;
+
+  font-weight: bolder;
+  color: white;
+  background-color: #2b70d4;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint > img {
+  width: 2rem;
+}
+.board {
+  width: min(90vw, 500px);
+  aspect-ratio: 1/1;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.status {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.cell {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: black solid 1px;
+}
+.X-mark {
+  fill: #2b70d4;
+}
+.O-mark {
+  fill: red;
+}
+
+.status {
+  width: 36%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.turn {
+  width: 80%;
+  height: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border: #2b70d4 solid 1px;
+  border-radius: 5px;
+
+  color: #2b70d4;
+  font-weight: bold;
+  font-size: 1.2rem;
+  background-color: #eaf1fb;
+}
+
+.score{
+  width: 80%;
+  display: grid;
+  gap: 10px;
+}
+
+.player-status {
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.game-status{
+  color: #226eda;
+  font-weight: bold;
+}
+
+.score-text,
+.player-score,
+.player-one-name,
+.player-two-name{
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.player-one-name{
+  color: #226eda;
+}
+.player-two-name{
+  color: red;
+}
+
+.result{
+  width: 80%;
+  
+}
+.game-result-text{
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.progress{
+  width: 100%;
+  height: 3rem;
+
+  opacity: 70%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 7px;
+}
+.restart {
+  appearance: none;
+  cursor: pointer;
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+
+  font-weight: bold;
+
+  width: min(12%,200px);
+  aspect-ratio: 3/1;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 7px;
+  
+}
+
+.restart > img{
+  width: 2rem;
 }
