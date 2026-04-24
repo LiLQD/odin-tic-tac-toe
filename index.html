@@ -1,13 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="title">
+        <h1 class="game-name">Tic Tac Toe</h1>
+        <p>The classic game of Xs and Os</p>
+      </div>
+
+      <div class="game-content">
+        <div class="player-bar">
+          <p class="players-header">PLAYERS</p>
+          <div class="player">
+            <p>Player 1 (X)</p>
+            <input type="text" name="playerOne" />
+          </div>
+          <div class="player">
+            <p>Player 2 (O)</p>
+            <input type="text" name="playerTwo" />
+          </div>
+          <button class="start">START GAME</button>
+          <div class="hint">
+            <img src="assets/lightbulb-on-outline.svg" alt="suggest" />
+            <p>Player X go first</p>
+          </div>
+        </div>
+
+        <div class="board">
+          <div class="cell">
+            <img src="assets/X.svg" class="X-mark" alt="X" />
+          </div>
+          <div class="cell">
+            <img src="assets/X.svg" class="X-mark" alt="X" />
+          </div>
+          <div class="cell">
+            <img src="assets/X.svg" class="X-mark" alt="X" />
+          </div>
+          <div class="cell">
+            <img src="assets/X.svg" class="X-mark" alt="X" />
+          </div>
+          <div class="cell">
+            <img src="assets/X.svg" class="X-mark" alt="X" />
+          </div>
+          <div class="cell">
+            <img src="assets/O.svg" class="O-mark" alt="O" />
+          </div>
+          <div class="cell">
+            <img src="assets/O.svg" class="O-mark" alt="O" />
+          </div>
+          <div class="cell">
+            <img src="assets/O.svg" class="O-mark" alt="O" />
+          </div>
+          <div class="cell">
+            <img src="assets/O.svg" class="O-mark" alt="O" />
+          </div>
+        </div>
+
+        <div class="status">
+          <p class="game-status">GAME STATUS</p>
+
+          <div class="turn">
+            <p>Turn</p>
+            <p class="player-name">Player 1 (X)</p>
+          </div>
+
+          <div class="score">
+            <p class="score-text">Score</p>
+
+            <div class="player-status">
+              <p class="player-one-name">Player 1 (X)</p>
+              <p class="player-score">0</p>
+            </div>
+
+            <div class="player-status">
+              <p class="player-two-name">Player 2 (O)</p>
+              <p class="player-score">0</p>
+            </div>
+          </div>
+          <div class="result">
+            <p class="game-result-text">GAME RESULT</p>
+            <div class="progress">
+              <p>Game in progress...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="restart"><img src="assets/restart.svg" alt="">RESTART GAME</button>
+    </div>
+
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
