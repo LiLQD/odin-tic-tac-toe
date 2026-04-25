@@ -18,13 +18,13 @@
           <p class="players-header">PLAYERS</p>
           <div class="player">
             <p>Player 1 (X)</p>
-            <input type="text" name="playerOne" />
+            <input type="text" id="playerOne" />
           </div>
           <div class="player">
             <p>Player 2 (O)</p>
-            <input type="text" name="playerTwo" />
+            <input type="text" id="playerTwo" />
           </div>
-          <button class="start">START GAME</button>
+          <button id="start">START GAME</button>
           <div class="hint">
             <img src="assets/lightbulb-on-outline.svg" alt="suggest" />
             <p>Player X go first</p>
@@ -91,7 +91,9 @@
         </div>
       </div>
 
-      <button class="restart"><img src="assets/restart.svg" alt="">RESTART GAME</button>
+      <button class="restart">
+        <img src="assets/restart.svg" alt="" />RESTART GAME
+      </button>
     </div>
 
     <script src="script.js"></script>
