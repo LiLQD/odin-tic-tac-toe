@@ -40,9 +40,17 @@ function Cell() {
   return { setCell, getCell };
 }
 
-function Player(name) {
+function Player() {
   let point = 0;
   let mark;
+  let name;
+  
+  function setName(nameInput){
+    name = nameInput;
+  }
+  function getName(){
+    return name;
+  }
   function setMark(m) {
     mark = m;
   }
@@ -53,16 +61,18 @@ function Player(name) {
     point++;
     console.log(`${name} won with ${point} points`);
   }
-  return { name, win, setMark, getMark };
+  return { win, setName, getName, setMark, getMark };
 }
 
 const gameController = (function GameController() {
-  const player1 = Player("LiLQD");
+  const player1 = Player();
+  player1.setName("LiLQD")
   player1.setMark("O");
-  const player2 = Player("GunD");
+  const player2 = Player();
+  player2.setName("GunD")
   player2.setMark("X");
-  console.log(player1);
-  console.log(player2);
+  console.log(player1.getName());
+  console.log(player2.getName());
 
   let isFirstPlayerTurn = true;
   
@@ -157,4 +167,10 @@ const gameController = (function GameController() {
   return { playRound };
 })();
 
-gameController.playRound();
+function getNameInput(){
+  const playerOne = document.getElementsByClassName("playerOne");
+  const playerTwo = document.getElementsByClassName("playerTwo");
+  console.log(playerOne.value);
+  console.log(playerTwo.value);
+
+}
