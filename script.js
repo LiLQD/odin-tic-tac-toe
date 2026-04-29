@@ -82,6 +82,11 @@ const gameController = (function GameController() {
   const player1 = Player();
   const player2 = Player();
   let gameOver = false;
+  let currentPlayer = player1;
+  function newRound() {
+    gameOver = false;
+    currentPlayer = player1;
+  }
   function setPlayer() {
     player1.setMark("X");
     player1.setName("playerOne");
@@ -152,7 +157,7 @@ const gameController = (function GameController() {
     }
     return true;
   }
-  let currentPlayer = player1;
+  
   function playRound(rowIndex, columnIndex) {
     if (gameOver) return;
     screenController.updateScreen();
@@ -189,6 +194,7 @@ const gameController = (function GameController() {
   }
   return {
     setPlayer,
+    newRound,
     playRound,
     getCurrentPlayer,
     getPlayer1Score,
@@ -198,10 +204,12 @@ const gameController = (function GameController() {
 
 const screenController = (function ScreenController() {
   const startButton = document.querySelector("#start");
-  const gameboard = Gameboard.getBoard();
+  const restartButton = document.querySelector(".restart");
   const turn = document.querySelector(".turn");
 
   function updateScreen() {
+    const gameboard = Gameboard.getBoard();
+
     const board = document.querySelector("#board");
     board.textContent = "";
 
@@ -239,13 +247,6 @@ const screenController = (function ScreenController() {
     gameController.playRound(selectedRow, selectedCol);
     e.target.disabled = true;
   }
-  function startGame() {
-    gameController.setPlayer();
-    startButton.disabled = true;
-    updateScreen();
-  }
-  board.addEventListener("click", clickHandlerBoard);
-  startButton.addEventListener("click", startGame);
 
   function winScreen() {
     while (turn.firstChild) {
@@ -290,5 +291,20 @@ const screenController = (function ScreenController() {
 
     player2Status.appendChild(player2Score);
   }
+
+  function startGame() {
+    gameController.setPlayer();
+    startButton.disabled = true;
+    updateScreen();
+  }
+
+  function restartGame() {
+    Gameboard.setBoard();
+    gameController.newRound();
+    updateScreen();
+  }
+  board.addEventListener("click", clickHandlerBoard);
+  startButton.addEventListener("click", startGame);
+  restartButton.addEventListener("click", restartGame);
   return { updateScreen, winScreen, drawScreen };
 })();
