@@ -163,7 +163,7 @@ img {
 .hint > img {
   width: 2rem;
 }
-.board {
+#board {
   width: min(90vw, 500px);
   aspect-ratio: 1/1;
   display: grid;
@@ -189,6 +189,12 @@ img {
   background-color: white;
 
   border: black solid 1px;
+}
+.X-mark{
+  color: red;
+}
+.O-mark{
+  color: #226eda;
 }
 
 .status {

@@ -9,8 +9,10 @@ const Gameboard = (function () {
       board[i].push(Cell());
     }
   }
-
   function getBoard() {
+    return board;
+  }
+  function printBoard() {
     const printBoard = board.map((row) => row.map((cell) => cell.getCell()));
     return printBoard;
   }
@@ -25,8 +27,9 @@ const Gameboard = (function () {
       placeMark(rowIndex - 1, columnIndex - 1, mark);
     }
   }
+  
 
-  return { getBoard, placeMark };
+  return { getBoard, printBoard, placeMark };
 })();
 
 function Cell() {
@@ -44,11 +47,17 @@ function Player() {
   let point = 0;
   let mark;
   let name;
-  
-  function setName(nameInput){
-    name = nameInput;
+
+  function setName(inputId) {
+    const playerInput = document.querySelector(`#${inputId}`);
+    name = playerInput.value;
+    if (name === "" || name === null || name === undefined) {
+      name = `Player ${mark}`;
+    }
+    console.log(name);
+    playerInput.disabled = true;
   }
-  function getName(){
+  function getName() {
     return name;
   }
   function setMark(m) {
@@ -60,29 +69,30 @@ function Player() {
   function win() {
     point++;
     console.log(`${name} won with ${point} points`);
+    screenController.startButton.disabled = false;
   }
   return { win, setName, getName, setMark, getMark };
 }
 
 const gameController = (function GameController() {
   const player1 = Player();
-  player1.setName("LiLQD")
-  player1.setMark("O");
   const player2 = Player();
-  player2.setName("GunD")
-  player2.setMark("X");
-  console.log(player1.getName());
-  console.log(player2.getName());
-
   let isFirstPlayerTurn = true;
-  
+  function setPlayer() {
+    player1.setMark("X");
+    player1.setName("playerOne");
+
+    player2.setMark("O");
+    player2.setName("playerTwo");
+  }
   function switchTurn() {
     return (isFirstPlayerTurn = isFirstPlayerTurn ? false : true);
   }
 
   function winCheck() {
-    const valueBoard = Gameboard.getBoard();
+    const valueBoard = Gameboard.printBoard();
     const boardSize = valueBoard.length;
+
     let diagWinCondition = true;
     let antiDiagWinCondition = true;
     let firstDiagCell = valueBoard[0][0];
@@ -127,7 +137,7 @@ const gameController = (function GameController() {
     return false;
   }
   function drawCheck() {
-    const valueBoard = Gameboard.getBoard();
+    const valueBoard = Gameboard.printBoard();
     const boardSize = valueBoard.length;
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
@@ -139,10 +149,11 @@ const gameController = (function GameController() {
   function playRound() {
     let currentPlayer;
     while (!winCheck() && !drawCheck()) {
+      screenController.updateScreen();
+      console.log(Gameboard.printBoard());
       if (isFirstPlayerTurn) {
         currentPlayer = player1;
-        console.log(Gameboard.getBoard());
-        console.log(`Is ${player1.name} turn`);
+        console.log(`Is ${player1.getName()} turn`);
         const rowIndex = prompt("Row index");
         const columnIndex = prompt("Column index");
 
@@ -150,8 +161,7 @@ const gameController = (function GameController() {
         switchTurn();
       } else {
         currentPlayer = player2;
-        console.log(Gameboard.getBoard());
-        console.log(`Is ${player2.name} turn`);
+        console.log(`Is ${player2.getName()} turn`);
         const rowIndex = prompt("Row index");
         const columnIndex = prompt("Column index");
 
@@ -159,18 +169,46 @@ const gameController = (function GameController() {
         switchTurn();
       }
     }
-    console.log(Gameboard.getBoard());
+    console.log(Gameboard.printBoard());
+    screenController.updateScreen();
     if (winCheck()) {
       currentPlayer.win();
     } else console.log("Draw");
   }
-  return { playRound };
+  return { setPlayer, playRound };
 })();
 
-function getNameInput(){
-  const playerOne = document.getElementsByClassName("playerOne");
-  const playerTwo = document.getElementsByClassName("playerTwo");
-  console.log(playerOne.value);
-  console.log(playerTwo.value);
+const screenController = (function ScreenController() {
+  const startButton = document.querySelector("#start");
 
-}
+  function updateScreen() {
+    const gameboard = Gameboard.getBoard();
+    const board = document.querySelector("#board");
+    board.textContent = "";
+
+    gameboard.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        const cellButton = document.createElement("button");
+        cellButton.textContent = cell.getCell();
+        if(cell.getCell() === "X"){
+          cellButton.classList.add("cell", "X-mark");
+        }
+        else cellButton.classList.add("cell", "O-mark");
+        cellButton.dataset.column = colIndex;
+        cellButton.dataset.row = rowIndex;
+        board.appendChild(cellButton);
+      });
+    });
+  }
+
+  function startGame() {
+    gameController.setPlayer();
+    startButton.disabled = true;
+    updateScreen();
+    gameController.playRound();
+  }
+
+  startButton.addEventListener("click", startGame);
+
+  return { startButton, updateScreen };
+})();
