@@ -20,14 +20,12 @@ const Gameboard = (function () {
   function placeMark(rowIndex, columnIndex, mark) {
     if (board[rowIndex][columnIndex].getCell() === "") {
       board[rowIndex][columnIndex].setCell(mark);
+      return true;
     } else {
-      console.log("Can only tick to empty cell. Please choose another cell");
-      const rowIndex = prompt("Choose another row index");
-      const columnIndex = prompt("Choose another column index");
-      placeMark(rowIndex - 1, columnIndex - 1, mark);
+      prompt("Can only tick to empty cell");
+      return false;
     }
   }
-  
 
   return { getBoard, printBoard, placeMark };
 })();
@@ -69,7 +67,6 @@ function Player() {
   function win() {
     point++;
     console.log(`${name} won with ${point} points`);
-    screenController.startButton.disabled = false;
   }
   return { win, setName, getName, setMark, getMark };
 }
@@ -77,7 +74,6 @@ function Player() {
 const gameController = (function GameController() {
   const player1 = Player();
   const player2 = Player();
-  let isFirstPlayerTurn = true;
   function setPlayer() {
     player1.setMark("X");
     player1.setName("playerOne");
@@ -86,7 +82,9 @@ const gameController = (function GameController() {
     player2.setName("playerTwo");
   }
   function switchTurn() {
-    return (isFirstPlayerTurn = isFirstPlayerTurn ? false : true);
+    return currentPlayer === player1
+      ? (currentPlayer = player2)
+      : (currentPlayer = player1);
   }
 
   function winCheck() {
@@ -146,43 +144,36 @@ const gameController = (function GameController() {
     }
     return true;
   }
-  function playRound() {
-    let currentPlayer;
-    while (!winCheck() && !drawCheck()) {
-      screenController.updateScreen();
-      console.log(Gameboard.printBoard());
-      if (isFirstPlayerTurn) {
-        currentPlayer = player1;
-        console.log(`Is ${player1.getName()} turn`);
-        const rowIndex = prompt("Row index");
-        const columnIndex = prompt("Column index");
-
-        Gameboard.placeMark(rowIndex - 1, columnIndex - 1, player1.getMark());
-        switchTurn();
-      } else {
-        currentPlayer = player2;
-        console.log(`Is ${player2.getName()} turn`);
-        const rowIndex = prompt("Row index");
-        const columnIndex = prompt("Column index");
-
-        Gameboard.placeMark(rowIndex - 1, columnIndex - 1, player2.getMark());
-        switchTurn();
-      }
-    }
+  let currentPlayer = player1;
+  function playRound(rowIndex, columnIndex) {
     console.log(Gameboard.printBoard());
+    console.log(`Is ${currentPlayer.getName()} turn`);
+
+    const isValidTurn = Gameboard.placeMark(
+      rowIndex,
+      columnIndex,
+      currentPlayer.getMark(),
+    );
     screenController.updateScreen();
     if (winCheck()) {
       currentPlayer.win();
-    } else console.log("Draw");
+    } else if (drawCheck()) console.log("Draw");
+    if (isValidTurn) switchTurn();
+
+    screenController.updateScreen();
   }
-  return { setPlayer, playRound };
+  function getCurrentPlayer() {
+    return currentPlayer.getName();
+  }
+  return { setPlayer, playRound, getCurrentPlayer };
 })();
 
 const screenController = (function ScreenController() {
   const startButton = document.querySelector("#start");
+  const gameboard = Gameboard.getBoard();
+  const turn = document.querySelector(".turn");
 
   function updateScreen() {
-    const gameboard = Gameboard.getBoard();
     const board = document.querySelector("#board");
     board.textContent = "";
 
@@ -190,25 +181,58 @@ const screenController = (function ScreenController() {
       row.forEach((cell, colIndex) => {
         const cellButton = document.createElement("button");
         cellButton.textContent = cell.getCell();
-        if(cell.getCell() === "X"){
+        if (cell.getCell() === "X") {
           cellButton.classList.add("cell", "X-mark");
-        }
-        else cellButton.classList.add("cell", "O-mark");
+        } else if (cell.getCell() === "O")
+          cellButton.classList.add("cell", "O-mark");
+        else cellButton.classList.add("cell");
         cellButton.dataset.column = colIndex;
         cellButton.dataset.row = rowIndex;
         board.appendChild(cellButton);
       });
     });
+
+    //Turn
+    while (turn.firstChild) {
+      turn.removeChild(turn.firstChild);
+    }
+    const p = document.createElement("p");
+    p.textContent = "Turn";
+    turn.appendChild(p);
+    const playerName = document.createElement("p");
+    playerName.textContent = gameController.getCurrentPlayer();
+    playerName.classList.add("player-name");
+    turn.appendChild(playerName);
+
+    //Score
   }
 
+  function clickHandlerBoard(e) {
+    const selectedRow = e.target.dataset.row;
+    const selectedCol = e.target.dataset.column;
+    gameController.playRound(selectedRow, selectedCol);
+    e.target.disabled = true;
+  }
   function startGame() {
     gameController.setPlayer();
     startButton.disabled = true;
     updateScreen();
-    gameController.playRound();
   }
-
+  board.addEventListener("click", clickHandlerBoard);
   startButton.addEventListener("click", startGame);
 
-  return { startButton, updateScreen };
+  function winScreen() {
+    while (turn.firstChild) {
+      turn.removeChild(turn.firstChild);
+    }
+    
+    const playerName = document.createElement("p");
+    playerName.textContent = gameController.getCurrentPlayer();
+    playerName.classList.add("player-name");
+    turn.appendChild(playerName);
+    const p = document.createElement("p");
+    p.textContent = "WIN";
+    turn.appendChild(p);
+  }
+  return { updateScreen };
 })();

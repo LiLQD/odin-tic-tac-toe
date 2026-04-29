@@ -185,7 +185,7 @@ img {
   justify-content: center;
   align-items: center;
 
-  font-size: 7rem;
+  font-size: 6.5rem;
   background-color: white;
 
   border: black solid 1px;
@@ -231,7 +231,8 @@ img {
   gap: 10px;
 }
 
-.player-status {
+.player-one-status,
+.player-two-status {
   display: flex;
   justify-content: space-between;
 }
@@ -250,10 +251,10 @@ img {
 }
 
 .player-one-name {
-  color: #226eda;
+  color: red;
 }
 .player-two-name {
-  color: red;
+  color: #226eda;
 }
 
 .result {
