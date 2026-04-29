@@ -1,14 +1,18 @@
 const Gameboard = (function () {
-  let board = [];
-  let row = 3;
-  let column = 3;
+  let board;
+  function setBoard() {
+    board = [];
+    let row = 3;
+    let column = 3;
 
-  for (let i = 0; i < row; i++) {
-    board[i] = [];
-    for (let j = 0; j < column; j++) {
-      board[i].push(Cell());
+    for (let i = 0; i < row; i++) {
+      board[i] = [];
+      for (let j = 0; j < column; j++) {
+        board[i].push(Cell());
+      }
     }
   }
+  setBoard();
   function getBoard() {
     return board;
   }
@@ -27,7 +31,7 @@ const Gameboard = (function () {
     }
   }
 
-  return { getBoard, printBoard, placeMark };
+  return { setBoard, getBoard, printBoard, placeMark };
 })();
 
 function Cell() {
@@ -68,12 +72,16 @@ function Player() {
     point++;
     console.log(`${name} won with ${point} points`);
   }
-  return { win, setName, getName, setMark, getMark };
+  function getPoint() {
+    return point;
+  }
+  return { win, setName, getName, setMark, getMark, getPoint };
 }
 
 const gameController = (function GameController() {
   const player1 = Player();
   const player2 = Player();
+  let gameOver = false;
   function setPlayer() {
     player1.setMark("X");
     player1.setName("playerOne");
@@ -146,6 +154,9 @@ const gameController = (function GameController() {
   }
   let currentPlayer = player1;
   function playRound(rowIndex, columnIndex) {
+    if (gameOver) return;
+    screenController.updateScreen();
+
     console.log(Gameboard.printBoard());
     console.log(`Is ${currentPlayer.getName()} turn`);
 
@@ -156,16 +167,33 @@ const gameController = (function GameController() {
     );
     screenController.updateScreen();
     if (winCheck()) {
+      gameOver = true;
       currentPlayer.win();
-    } else if (drawCheck()) console.log("Draw");
-    if (isValidTurn) switchTurn();
-
-    screenController.updateScreen();
+      screenController.updateScreen();
+      screenController.winScreen();
+    } else if (drawCheck()) {
+      gameOver = true;
+      screenController.updateScreen();
+      screenController.drawScreen();
+    }
+    if (isValidTurn && !winCheck() && !drawCheck()) switchTurn();
   }
   function getCurrentPlayer() {
     return currentPlayer.getName();
   }
-  return { setPlayer, playRound, getCurrentPlayer };
+  function getPlayer1Score() {
+    return player1.getPoint();
+  }
+  function getPlayer2Score() {
+    return player2.getPoint();
+  }
+  return {
+    setPlayer,
+    playRound,
+    getCurrentPlayer,
+    getPlayer1Score,
+    getPlayer2Score,
+  };
 })();
 
 const screenController = (function ScreenController() {
@@ -203,8 +231,6 @@ const screenController = (function ScreenController() {
     playerName.textContent = gameController.getCurrentPlayer();
     playerName.classList.add("player-name");
     turn.appendChild(playerName);
-
-    //Score
   }
 
   function clickHandlerBoard(e) {
@@ -225,7 +251,6 @@ const screenController = (function ScreenController() {
     while (turn.firstChild) {
       turn.removeChild(turn.firstChild);
     }
-    
     const playerName = document.createElement("p");
     playerName.textContent = gameController.getCurrentPlayer();
     playerName.classList.add("player-name");
@@ -233,6 +258,37 @@ const screenController = (function ScreenController() {
     const p = document.createElement("p");
     p.textContent = "WIN";
     turn.appendChild(p);
+    scoreUpdate();
   }
-  return { updateScreen };
+
+  function drawScreen() {
+    while (turn.firstChild) {
+      turn.removeChild(turn.firstChild);
+    }
+    const p = document.createElement("p");
+    p.textContent = "DRAW";
+    p.classList.add("draw");
+    turn.appendChild(p);
+    scoreUpdate();
+  }
+
+  function scoreUpdate() {
+    const player1Status = document.querySelector(".player-one-status");
+    const player2Status = document.querySelector(".player-two-status");
+    player1Status.removeChild(player1Status.lastElementChild);
+    player2Status.removeChild(player2Status.lastElementChild);
+
+    const player1Score = document.createElement("p");
+    player1Score.textContent = gameController.getPlayer1Score();
+    player1Score.classList.add("player-one-score");
+
+    player1Status.appendChild(player1Score);
+
+    const player2Score = document.createElement("p");
+    player2Score.textContent = gameController.getPlayer2Score();
+    player2Score.classList.add("player-two-score");
+
+    player2Status.appendChild(player2Score);
+  }
+  return { updateScreen, winScreen, drawScreen };
 })();

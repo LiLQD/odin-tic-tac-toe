@@ -243,7 +243,8 @@ img {
 }
 
 .score-text,
-.player-score,
+.player-one-score,
+.player-two-score,
 .player-one-name,
 .player-two-name {
   font-size: 1.2rem;
@@ -257,7 +258,11 @@ img {
   color: #226eda;
 }
 
-.result {
+.draw{
+  color: orange;
+  font-size: 2rem;
+}
+/* .result {
   width: 80%;
 }
 .game-result-text {
@@ -277,7 +282,7 @@ img {
   background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 7px;
-}
+} */
 .restart {
   appearance: none;
   cursor: pointer;
