@@ -160,11 +160,9 @@ const gameController = (function GameController() {
   
   function playRound(rowIndex, columnIndex) {
     if (gameOver) return;
-    screenController.updateScreen();
-
     console.log(Gameboard.printBoard());
     console.log(`Is ${currentPlayer.getName()} turn`);
-
+    
     const isValidTurn = Gameboard.placeMark(
       rowIndex,
       columnIndex,
@@ -176,12 +174,14 @@ const gameController = (function GameController() {
       currentPlayer.win();
       screenController.updateScreen();
       screenController.winScreen();
-    } else if (drawCheck()) {
+    } 
+    else if (drawCheck()) {
       gameOver = true;
       screenController.updateScreen();
       screenController.drawScreen();
     }
     if (isValidTurn && !winCheck() && !drawCheck()) switchTurn();
+    screenController.updateTurn()
   }
   function getCurrentPlayer() {
     return currentPlayer.getName();
@@ -228,7 +228,16 @@ const screenController = (function ScreenController() {
       });
     });
 
-    //Turn
+  }
+
+  function clickHandlerBoard(e) {
+    const selectedRow = e.target.dataset.row;
+    const selectedCol = e.target.dataset.column;
+    gameController.playRound(selectedRow, selectedCol);
+    e.target.disabled = true;
+  }
+
+  function updateTurn(){
     while (turn.firstChild) {
       turn.removeChild(turn.firstChild);
     }
@@ -239,13 +248,6 @@ const screenController = (function ScreenController() {
     playerName.textContent = gameController.getCurrentPlayer();
     playerName.classList.add("player-name");
     turn.appendChild(playerName);
-  }
-
-  function clickHandlerBoard(e) {
-    const selectedRow = e.target.dataset.row;
-    const selectedCol = e.target.dataset.column;
-    gameController.playRound(selectedRow, selectedCol);
-    e.target.disabled = true;
   }
 
   function winScreen() {
@@ -306,5 +308,5 @@ const screenController = (function ScreenController() {
   board.addEventListener("click", clickHandlerBoard);
   startButton.addEventListener("click", startGame);
   restartButton.addEventListener("click", restartGame);
-  return { updateScreen, winScreen, drawScreen };
+  return { updateScreen, winScreen, drawScreen, updateTurn };
 })();
