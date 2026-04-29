@@ -180,8 +180,11 @@ const gameController = (function GameController() {
       screenController.updateScreen();
       screenController.drawScreen();
     }
-    if (isValidTurn && !winCheck() && !drawCheck()) switchTurn();
-    screenController.updateTurn()
+    if (isValidTurn && !winCheck() && !drawCheck()) {
+      switchTurn();
+      screenController.updateTurn()
+    }
+    
   }
   function getCurrentPlayer() {
     return currentPlayer.getName();
